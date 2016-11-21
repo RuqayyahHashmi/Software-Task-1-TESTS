@@ -34,17 +34,28 @@ void EnterData(TheData OriginalData)
 		cerr << "\n*** Unable to allocate memory **\n";
 		exit(1);
 	}
-  //get the data
 	else {
 		cout << "Please input the data values one at a time:" << endl;
 		for (unsigned int i = 0; i < OriginalData.Length; i++) {
 			cin >> OriginalData.Values[i];
 		}
-    //print the data
 		cout << "Data array completed." << endl << "You have entered the following array: ";
 			for (unsigned int i = 0; i < OriginalData.Length; i++) {
 				cout << OriginalData.Values[i] << " ";
-        }
+			}
+			cout << endl;
+			
+			
+		cout << "When incremented by 1, this gives the array: ";
+			for (unsigned int j = 0; j < 4; j++) {
+//				OriginalData.Values = OriginalData.Values + j;
+				cout << OriginalData.Values[j+1] << " ";
+			}
+			cout << endl;
+		cout << "When incremented by 2, this gives the array: ";
+			for (unsigned int j = 0; j < 4; j++) {
+				cout << OriginalData.Values[j+2] << " ";
+			}
 			cout << endl;
 	}
 }
