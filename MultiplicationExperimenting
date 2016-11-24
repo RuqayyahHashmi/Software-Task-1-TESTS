@@ -1,0 +1,140 @@
+#include <iostream>
+#include <stdlib.h>																						//Needed for exit() function. Am I allowed to add this?
+using namespace std;
+
+struct TheData {
+	double* Values;  // holds the data to be filtered
+	unsigned long Length;  // number of data values
+	bool Valid;   // true if the data values have been obtained
+};
+
+struct TheFilter {
+	double* Values; // the filter values
+	unsigned long Length; // number of filter values
+	bool Valid; // true if the filter values have been obtained
+};
+
+void EnterData(TheData* OriginalData);
+void EnterFilter(TheFilter* Filter);
+void ApplyFilter(TheData* OriginalData,TheData* FilteredData, TheFilter* Filter);
+void DisplayFiltered(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter);
+
+int main()
+{
+
+	// define the original data and its initial values
+	TheData OriginalData = { 0,0,false };
+	TheFilter Filter = { 0,0,false };
+	TheData FilteredData = { 0,0,false };
+
+
+	EnterData(&OriginalData);
+	EnterFilter(&Filter);
+
+	cout << endl << "Arrays Lengths in Main: " << endl << OriginalData.Length << endl;
+	cout << Filter.Length << endl;
+	cout << FilteredData.Length << endl;
+
+	ApplyFilter(&OriginalData, &FilteredData, &Filter);
+	DisplayFiltered(&OriginalData, &FilteredData, &Filter);
+
+		return 0;
+}
+
+void EnterData(TheData* OriginalData)
+{
+	// initialize the data structure
+	cout << endl << "How many data values would you like to enter? ";
+	cin >> OriginalData->Length;
+
+	// allocate memory to the data
+	OriginalData->Values = new double[OriginalData->Length];
+	if (OriginalData->Values == 0) {
+		cerr << "\n*** Unable to allocate memory **\n";
+		exit(1);
+	}
+	else {
+		cout << "Please input the data values one at a time:" << endl;
+		for (unsigned int i = 0; i < OriginalData->Length; i++) {
+			cin >> OriginalData->Values[i];
+		}
+			cout << endl;
+	}
+}
+ 
+void EnterFilter(TheFilter* Filter)
+{
+	// initialize the data structure
+	cout << endl << "How many filter values would you like to enter? ";
+	cin >> Filter->Length;
+
+	// allocate memory to the filter values
+	Filter->Values = new double[Filter->Length];
+	if (Filter->Values == 0) {
+		cerr << "\n*** Unable to allocate memory **\n";
+		exit(1);
+	}
+	else { 
+		cout << "Please input the filter values one at a time:" << endl;
+		for (unsigned int i = 0; i < Filter->Length; i++) {
+			cin >> Filter->Values[i];
+		}
+		cout << endl;
+	}
+}
+
+void ApplyFilter(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter)
+{
+	// initialize the data structure that holds the filtered data
+	FilteredData->Length = (OriginalData->Length - Filter->Length) + 1;
+//	FilteredData->Values[FilteredData->Length] = { 0 };
+
+	cout << endl << "Array lengths in ApplyFilter: " << endl << OriginalData->Length << endl;
+	cout << Filter->Length << endl;
+	cout << FilteredData->Length << endl;
+	cout << endl << "Reached Apply Filter." << endl;
+
+	cout << "Initialized Filtered Data Length." << endl;
+
+	// get memory for the filtered data
+	FilteredData->Values = new double[FilteredData->Length];
+
+	cout << "Got memory." << endl <<endl;
+
+	if (FilteredData->Values == 0) {
+		cerr << "\n*** Unable to allocate memory **\n";
+		cout << "Unable to allocate memory." << endl;
+		exit(1);
+	}
+	else {
+			cout << "First Value of Input: " << OriginalData->Values[0] << endl;
+			cout << "First Value of Filter: " << Filter->Values[0] << endl;
+			cout << "First Value of Output: " << FilteredData->Values[0] << endl;
+			FilteredData->Values[0] = OriginalData->Values[0] * Filter->Values[0];
+			cout << endl << "First Value of Output Calculated: ";
+			cout << endl << OriginalData->Values[0] << " x " << Filter->Values[0] << " = " << FilteredData->Values[0] << endl;
+			FilteredData->Values[1] = OriginalData->Values[1] * Filter->Values[1];
+			cout << endl << "Second Value of Output Calculated: ";
+			cout << endl << OriginalData->Values[1] << " x " << Filter->Values[1] << " = " << FilteredData->Values[1] << endl << endl;
+
+			for (unsigned int i = 0; i < Filter->Length; i++) {
+				FilteredData->Values[i] = OriginalData->Values[i] * Filter->Values[i];
+				cout << FilteredData->Values[i] << " = " << OriginalData->Values[i] << " x " << Filter->Values[i];
+				cout << endl << "Filter Value " << i << " is " << FilteredData->Values[i] << endl << endl;
+			}
+	}
+	cout << endl;
+}
+
+void DisplayFiltered(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter)
+{
+	cout << endl << "The arrays you entered:" << endl;
+	for (unsigned int i = 0; i<OriginalData->Length; i++) {
+		cout << OriginalData->Values[i] << " ";
+	}
+	cout << endl;
+	for (unsigned int j = 0; j < Filter->Length; j++) {
+		cout << Filter->Values[j] << " ";
+	}
+	cout << endl;
+}
