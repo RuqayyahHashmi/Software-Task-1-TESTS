@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdlib.h>																						//Needed for exit() function. Am I allowed to add this?
+#include <stdlib.h>
 using namespace std;
 
 struct TheData {
@@ -8,43 +8,115 @@ struct TheData {
 	bool Valid;   // true if the data values have been obtained
 };
 
-void EnterData(TheData OriginalData);
+struct TheFilter {
+	double* Values; // the filter values
+	unsigned long Length; // number of filter values
+	bool Valid; // true if the filter values have been obtained
+};
 
-	int main()
+void EnterData(TheData* OriginalData);
+void EnterFilter(TheFilter* Filter);
+void ApplyFilter(TheData* OriginalData,TheData* FilteredData, TheFilter* Filter);
+void DisplayFiltered(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter);
+
+int main()
 {
 
 	// define the original data and its initial values
 	TheData OriginalData = { 0,0,false };
+	TheFilter Filter = { 0,0,false };
+	TheData FilteredData = { 0,0,false };
 
-	EnterData(OriginalData);
+
+	EnterData(&OriginalData);
+	EnterFilter(&Filter);
+	ApplyFilter(&OriginalData, &FilteredData, &Filter);
+	DisplayFiltered(&OriginalData, &FilteredData, &Filter);
 
 		return 0;
 }
 
-void EnterData(TheData OriginalData)
+void EnterData(TheData* OriginalData)
 {
-	// initialize the data structure that holds the data to be filtered, including getting
-	// the number of data values from the user
-	cout << "How many data values would you like to enter? ";
-	cin >> OriginalData.Length;
+	// initialize the data structure
+	cout << endl << "How many data values would you like to enter? ";
+	cin >> OriginalData->Length;
 
 	// allocate memory to the data
-	OriginalData.Values = new double[OriginalData.Length];
-	if (OriginalData.Values == 0) {
+	OriginalData->Values = new double[OriginalData->Length];
+	if (OriginalData->Values == 0) {
 		cerr << "\n*** Unable to allocate memory **\n";
 		exit(1);
 	}
-  //get the data
 	else {
 		cout << "Please input the data values one at a time:" << endl;
-		for (unsigned int i = 0; i < OriginalData.Length; i++) {
-			cin >> OriginalData.Values[i];
+		for (unsigned int i = 0; i < OriginalData->Length; i++) {
+			cin >> OriginalData->Values[i];
 		}
-    //print the data
-		cout << "Data array completed." << endl << "You have entered the following array: ";
-			for (unsigned int i = 0; i < OriginalData.Length; i++) {
-				cout << OriginalData.Values[i] << " ";
-        }
 			cout << endl;
 	}
+}
+ 
+void EnterFilter(TheFilter* Filter)
+{
+	// initialize the data structure
+	cout << endl << "How many filter values would you like to enter? ";
+	cin >> Filter->Length;
+
+	// allocate memory to the filter values
+	Filter->Values = new double[Filter->Length];
+	if (Filter->Values == 0) {
+		cerr << "\n*** Unable to allocate memory **\n";
+		exit(1);
+	}
+	else { 
+		cout << "Please input the filter values one at a time:" << endl;
+		for (unsigned int i = 0; i < Filter->Length; i++) {
+			cin >> Filter->Values[i];
+		}
+		cout << endl;
+	}
+}
+
+void ApplyFilter(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter)
+{
+	// initialize the data structure that holds the filtered data
+	FilteredData->Length = (OriginalData->Length - Filter->Length) + 1;
+
+	// get memory for the filtered data
+	FilteredData->Values = new double[FilteredData->Length];
+
+	if (FilteredData->Values == 0) {
+		cerr << "\n*** Unable to allocate memory **\n";
+		exit(1);
+	}
+	else {
+		cout << "The filtered data is ";
+			for (unsigned int i = 0; i < FilteredData->Length; i++) {
+				FilteredData->Values[i] = 0;
+				int filter_index = 0;
+				for (unsigned int j = i; j < i + Filter->Length; j++) {
+					FilteredData->Values[i] += OriginalData->Values[j] * Filter->Values[filter_index];
+					filter_index++;
+				}
+//			cout << endl << "Output Value " << i << " is " << FilteredData->Values[i] << endl << endl;
+			cout << FilteredData->Values[i] << " ";
+			}
+	}
+	cout << endl;
+}
+
+void DisplayFiltered(TheData* OriginalData, TheData* FilteredData, TheFilter* Filter)
+{
+//	cout << endl << "The arrays you entered:" << endl;
+//	for (unsigned int i = 0; i<OriginalData->Length; i++) {
+//		cout << OriginalData->Values[i] << " ";
+//	}
+//	cout << endl;
+//	for (unsigned int j = 0; j < Filter->Length; j++) {
+//		cout << Filter->Values[j] << " ";
+//	}
+//	cout << endl;
+
+	cout << endl << "Program end." << endl;
 }
